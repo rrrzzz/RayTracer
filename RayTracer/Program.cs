@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Numerics;
 
 namespace RayTracer
 {
@@ -9,6 +11,19 @@ namespace RayTracer
         public static void Main(string[] args)
         {
             Random rand = new Random();
+
+            var matStack = new Stack<Matrix4x4>();
+            matStack.Push(Matrix4x4.Identity);
+            
+            var matTest = new Matrix4x4(2,0,0,0,0,2,0,0,0,0,2,0,0,0,0,2);
+            
+            matStack.Push(matTest);
+
+            var mat = matStack.Peek();
+
+            RightMultiplyTopStack(2, matStack);
+            
+            
 
             var width = 1024;
             var height = 768;
@@ -24,6 +39,13 @@ namespace RayTracer
             }
             
             p.Save(@"D:\Docs\Courses\Computer graphics edx\img.png", ImageFormat.Png);
+        }
+        
+        private static void RightMultiplyTopStack(int transformMatrix, Stack<Matrix4x4> stack)
+        {
+            var topMat = stack.Pop();
+            topMat *= transformMatrix;
+            stack.Push(topMat);
         }
     }
 }
