@@ -16,7 +16,7 @@ namespace RayTracer
             A = a;
             B = b;
             C = c;
-            FaceNormal = Vector3.Cross(C - A, B - A);
+            FaceNormal = Vector3.Normalize(Vector3.Cross(C - A, B - A));
         }
     }
 }

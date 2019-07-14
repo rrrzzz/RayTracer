@@ -10,19 +10,23 @@ namespace RayTracer
     {
         public static void Main(string[] args)
         {
-            Random rand = new Random();
+            var testFilePath = @"D:\Docs\Courses\Computer graphics edx\testscenes\scene2.test";
+            var parser = new Parser();
+            parser.ReadFile(testFilePath);
 
-            var matStack = new Stack<Matrix4x4>();
-            matStack.Push(Matrix4x4.Identity);
-            
-            var matTest = new Matrix4x4(2,0,0,0,0,2,0,0,0,0,2,0,0,0,0,2);
-            
-            matStack.Push(matTest);
+            var x = 0;
+            x *= 2;
+        }
+        
+        private static void RightMultiplyTopStack(int transformMatrix, Stack<Matrix4x4> stack)
+        {
+            var topMat = stack.Pop();
+            topMat *= transformMatrix;
+            stack.Push(topMat);
+        }
 
-            var mat = matStack.Peek();
-
-            RightMultiplyTopStack(2, matStack);
-
+        private static void CreateImage()
+        {
             var width = 1024;
             var height = 768;
             
@@ -32,18 +36,11 @@ namespace RayTracer
             {
                 for (int j = 0; j < height; j++)
                 {
-                    p.SetPixel(i, j, Color.FromArgb(255, rand.Next(255), rand.Next(255), rand.Next(128)));
+                    p.SetPixel(i, j, Color.FromArgb(255, 255,255, 255));
                 }
             }
             
             p.Save(@"D:\Docs\Courses\Computer graphics edx\img.png", ImageFormat.Png);
-        }
-        
-        private static void RightMultiplyTopStack(int transformMatrix, Stack<Matrix4x4> stack)
-        {
-            var topMat = stack.Pop();
-            topMat *= transformMatrix;
-            stack.Push(topMat);
         }
     }
 }

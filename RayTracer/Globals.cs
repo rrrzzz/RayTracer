@@ -25,6 +25,6 @@ namespace RayTracer
         public static Vector3 UpInit { get; set; }
         public static Vector3 LookAtPoint { get; set; }
         public static float[] Attenuation { get; set; } = new float[] {1, 0, 0};
-        public static List<Light> Lights { get; set; } = new List<Light>();
+        public static List<Light> Lights { get; } = new List<Light>();
     }
 }

@@ -29,7 +29,7 @@ namespace RayTracer
                 Vector3 lightCol;
                 
                 if (line.StartsWith("#") || line == string.Empty) continue;
-                else splitLine = line.Split(' ');
+                else splitLine = line.Split(new []{' '}, StringSplitOptions.RemoveEmptyEntries);
                 var cmd = splitLine[0];
                 
 
@@ -66,8 +66,8 @@ namespace RayTracer
                     case "sphere":
                         GetFloatCmdValues(splitLine);
                         objProps = CreateObjectProperties();
-                        var spherePos = new Vector3(CmdValues[0], CmdValues[1], CmdValues[3]);
-                        Spheres.Add(new Sphere(spherePos, CmdValues[4], objProps, transformStack.Peek()));
+                        var spherePos = new Vector3(CmdValues[0], CmdValues[1], CmdValues[2]);
+                        Spheres.Add(new Sphere(spherePos, CmdValues[3], objProps, transformStack.Peek()));
                         break;
                         
                     case "output":
@@ -100,12 +100,12 @@ namespace RayTracer
                     
                     case "specular":
                         GetFloatCmdValues(splitLine);
-                        Diffuse = Get3dVectorFromFirstValues();
+                        Specular = Get3dVectorFromFirstValues();
                         break;
                     
                     case "emission":
                         GetFloatCmdValues(splitLine);
-                        Diffuse = Get3dVectorFromFirstValues();
+                        Emission = Get3dVectorFromFirstValues();
                         break;
                     
                     case "shininess":
@@ -121,7 +121,7 @@ namespace RayTracer
                     
                     case "point":
                         GetFloatCmdValues(splitLine);
-                        lightPos = new Vector4(CmdValues[0], CmdValues[1], CmdValues[2], 0);
+                        lightPos = new Vector4(CmdValues[0], CmdValues[1], CmdValues[2], 1);
                         lightCol = new Vector3(CmdValues[3], CmdValues[4], CmdValues[5]);
                         Lights.Add(new Light(lightPos, lightCol, Attenuation));
                         break;
