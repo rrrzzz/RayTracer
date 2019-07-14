@@ -4,11 +4,14 @@
     <e p="C:\Users\nekko\.Rider2019.1\system\extResources" t="IncludeRecursive" />
     <e p="C:\Users\nekko\.Rider2019.1\system\resharper-host\local\Transient\ReSharperHost\v191\SolutionCaches\_RayTracer.-1954450604.00" t="ExcludeRecursive" />
     <e p="D:\Docs\Courses\Computer graphics edx\RayTracer" t="IncludeFlat">
-      <e p="packages" t="ExcludeRecursive" />
+      <e p="packages" t="ExcludeRecursive">
+        <e p="Accord.3.8.2-alpha\build\Accord.dll.config" t="Include" />
+      </e>
       <e p="RayTracer" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
         <e p="GeometryObject.cs" t="Include" />
         <e p="Globals.cs" t="Include" />
+        <e p="Helpers.cs" t="Include" />
         <e p="Light.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive" />
         <e p="ObjectProperties.cs" t="Include" />

@@ -189,9 +189,8 @@ namespace RayTracer
         {
             if (FovY < 0.1 || AspectRatio < 0.1) 
                 throw new ArgumentException("FovY or AspectRatio haven't been initialized");
-            
-            //SHOULD USE RADIANS HERE!
-            FovX = (float)((2 * Math.Atan(Math.Tan(FovY * Math.PI / 180 * 0.5) * AspectRatio)) * 180 / Math.PI);
+
+            FovX = Helpers.ToDegrees(2 * Math.Atan(Math.Tan(Helpers.GetHalfFovInRad(FovY)) * AspectRatio));
         }
     }
 }

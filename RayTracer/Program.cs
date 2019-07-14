@@ -22,8 +22,6 @@ namespace RayTracer
             var mat = matStack.Peek();
 
             RightMultiplyTopStack(2, matStack);
-            
-            
 
             var width = 1024;
             var height = 768;
