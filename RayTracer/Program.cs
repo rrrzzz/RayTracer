@@ -31,9 +31,12 @@ namespace RayTracer
                 for (var j = 0; j < ImageHeight; j++)
                 {
                     var ray = new Ray(i + 0.5f, j + 0.5f);
-                    var intersectionObject = new Intersection(ray);
+                    var intersection = new Intersection(ray);
+                    var intersectionInfo = intersection.FindClosestIntersection();
+                    var colorFinder = new ColorFinder(ray, intersectionInfo);
+                    var color = colorFinder.FindColor();
                     
-                    p.SetPixel(i, j, Color.FromArgb(255, 255,255, 255));
+                    p.SetPixel(i, j, color);
                 }
             }
             

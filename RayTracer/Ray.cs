@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Accord.Math;
 using static RayTracer.Globals;
 
@@ -15,10 +16,15 @@ namespace RayTracer
             GetDirection(pixelX, pixelY);
             Origin = EyeInit;
         }
+
+        public Ray(Vector3 origin, Vector3 direction)
+        {
+            Origin = origin;
+            Direction = direction;
+        }
         
-        public Vector3 Direction { get; set; }
+        public Vector3 Direction { get; private set; }
         public Vector3 Origin { get; }
-        public float Multiplier { get; set; }
         
         public static void InitializeCoordinateFrame()
         {

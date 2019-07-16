@@ -9,6 +9,8 @@
       </e>
       <e p="RayTracer" t="IncludeRecursive">
         <e p="bin" t="ExcludeRecursive" />
+        <e p="ColorFinder.cs" t="Include" />
+        <e p="Extensions.cs" t="Include" />
         <e p="GeometryObject.cs" t="Include" />
         <e p="Globals.cs" t="Include" />
         <e p="Helpers.cs" t="Include" />

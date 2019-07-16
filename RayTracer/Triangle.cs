@@ -20,6 +20,11 @@ namespace RayTracer
             CalculateNormal();
         }
 
+        public float GetArea()
+        {
+            return Vector3.Cross(B - A, C - A).Norm / 2;
+        }
+
         private void CalculateNormal()
         {
             var vec = Vector3.Cross(C - A, B - A);

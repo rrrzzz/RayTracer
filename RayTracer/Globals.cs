@@ -20,7 +20,7 @@ namespace RayTracer
         public static Vector3 Ambient { get; set; } = new Vector3(.2f,.2f,.2f);
         public static Vector3 Diffuse { get; set; }
         public static Vector3 Specular { get; set; }
-        public static Vector3 Emission { get; set; }
+        public static Vector3 Emission { get; set; } = new Vector3(0,0,0);
         public static Vector3 EyeInit { get; set; }
         public static Vector3 UpInit { get; set; }
         public static Vector3 LookAtPoint { get; set; }

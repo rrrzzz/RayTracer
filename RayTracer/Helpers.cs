@@ -47,5 +47,15 @@ namespace RayTracer
             var dehomogenizedPosition = homogeneousPos / homogeneousPos.W;
             return new Vector3(dehomogenizedPosition.X, dehomogenizedPosition.Y, dehomogenizedPosition.Z);
         }
+
+        public static Vector3 ConvertToVector3(Vector4 v)
+        {
+            if (Math.Abs(v.W) < 0.01)
+            {
+                return new Vector3(v.X, v.Y, v.Z);
+            }
+            
+            return new Vector3(v.X / v.W, v.Y / v.W, v.Z / v.W);
+        }
     }
 }
