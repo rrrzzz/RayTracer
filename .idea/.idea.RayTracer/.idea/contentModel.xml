@@ -12,6 +12,7 @@
         <e p="GeometryObject.cs" t="Include" />
         <e p="Globals.cs" t="Include" />
         <e p="Helpers.cs" t="Include" />
+        <e p="Intersection.cs" t="Include" />
         <e p="Light.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive" />
         <e p="ObjectProperties.cs" t="Include" />
@@ -21,6 +22,7 @@
         <e p="Properties" t="Include">
           <e p="AssemblyInfo.cs" t="Include" />
         </e>
+        <e p="Ray.cs" t="Include" />
         <e p="RayTracer.csproj" t="IncludeRecursive" />
         <e p="Sphere.cs" t="Include" />
         <e p="Transform.cs" t="Include" />

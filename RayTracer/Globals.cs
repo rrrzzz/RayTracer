@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Numerics;
+using Accord.Math;
 
 namespace RayTracer
 {
@@ -11,8 +11,8 @@ namespace RayTracer
         public static float AspectRatio { get; set; }
         public static int RecursionMaxDepth { get; set; }
         public static string OutputFilename { get; set; }
-        public static float FovY { get; set; }
-        public static float FovX { get; set; }
+        public static float FovYRad { get; set; }
+        public static float FovXRad { get; set; }
         public static Vector3[] Vertices { get; set; }
         public static List<Triangle> Triangles { get; } = new List<Triangle>();
         public static List<Sphere> Spheres { get; } = new List<Sphere>();

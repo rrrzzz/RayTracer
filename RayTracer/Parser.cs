@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Numerics;
+using Accord.Math;
 using static RayTracer.Globals;
 using static RayTracer.Transform;
 
@@ -79,7 +79,7 @@ namespace RayTracer
                         EyeInit = new Vector3(CmdValues[0], CmdValues[1], CmdValues[2]);
                         LookAtPoint = new Vector3(CmdValues[3], CmdValues[4], CmdValues[5]);
                         UpInit = new Vector3(CmdValues[6], CmdValues[7], CmdValues[8]);
-                        FovY = CmdValues[9];
+                        FovYRad = Helpers.ToRadians(CmdValues[9]);
                         SetFovX();
                         break;
                     
@@ -187,10 +187,10 @@ namespace RayTracer
 
         private void SetFovX()
         {
-            if (FovY < 0.1 || AspectRatio < 0.1) 
+            if (FovYRad < 0.1 || AspectRatio < 0.1) 
                 throw new ArgumentException("FovY or AspectRatio haven't been initialized");
 
-            FovX = Helpers.ToDegrees(2 * Math.Atan(Math.Tan(Helpers.GetHalfFovInRad(FovY)) * AspectRatio));
+            FovXRad = (float)(2 * Math.Atan(Math.Tan(FovYRad * 0.5) * AspectRatio));
         }
     }
 }
