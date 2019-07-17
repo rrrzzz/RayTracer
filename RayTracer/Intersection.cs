@@ -1,5 +1,6 @@
 using System;
 using Accord.Math;
+using RayTracer.GeometryObjects;
 
 namespace RayTracer
 {
@@ -41,6 +42,29 @@ namespace RayTracer
 
             return new IntersectionInfo(_hitObject, _hit);
         }
+        
+        public bool IsLightObstructed(float distanceToLight)
+        {
+            foreach (var sphere in Globals.Spheres)
+            {
+                FindSphereIntersection(sphere);
+                if (_minDist < distanceToLight)
+                {
+                    return true;
+                }
+            }
+            
+            foreach (var triangle in Globals.Triangles)
+            {
+                FindTriangleIntersection(triangle);
+                if (_minDist < distanceToLight)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         private void FindSphereIntersection(Sphere sphere)
         {
@@ -60,7 +84,7 @@ namespace RayTracer
             if (discriminant < 0) return;
             
             //this is multiplier of inversed ray, before point transform
-            if (Math.Abs(discriminant) < 0.01) multiplier = -b / 2*a;
+            if (Math.Abs(discriminant) < Globals.Delta) multiplier = -b / 2*a;
             else
             {
                 var mult1 = (-b + Math.Sqrt(discriminant)) / 2 * a;
@@ -77,17 +101,20 @@ namespace RayTracer
             //is this really vector from rayOrigin? not from 0,0,0?
             // transform sphere normal here inverse transpose! and think about where to store spehere normal
             intersectionPoint = Helpers.TransformVector(intersectionPoint, sphere.Transform);
-
+            
+            sphere.Normal = intersectionPoint - sphere.CenterPos;
+            sphere.Normal.Normalize();
+            
             CheckDistanceUpdateHit(intersectionPoint, sphere);
         }
         
         private void FindTriangleIntersection(Triangle triangle)
         {
-            if (Math.Abs(Vector3.Dot(_ray.Direction, triangle.FaceNormal)) < 0.01) return;
+            if (Math.Abs(Vector3.Dot(_ray.Direction, triangle.Normal)) < Globals.Delta) return;
 
-            var multiplier = (Vector3.Dot(triangle.A, triangle.FaceNormal) -
-                          Vector3.Dot(_ray.Origin, triangle.FaceNormal)) /
-                         Vector3.Dot(_ray.Direction, triangle.FaceNormal);
+            var multiplier = (Vector3.Dot(triangle.A, triangle.Normal) -
+                          Vector3.Dot(_ray.Origin, triangle.Normal)) /
+                         Vector3.Dot(_ray.Direction, triangle.Normal);
 
             if (multiplier <= 0) return;
 
@@ -104,9 +131,9 @@ namespace RayTracer
             var cross2 = Vector3.Cross(edge2, p2);
 
             //not sure if can use normalized vector perpendicular to triangle here
-            if (!(Vector3.Dot(triangle.FaceNormal, cross0) > 0 &&
-                  Vector3.Dot(triangle.FaceNormal, cross1) > 0 &&
-                  Vector3.Dot(triangle.FaceNormal, cross2) > 0)) return;
+            if (!(Vector3.Dot(triangle.Normal, cross0) > 0 &&
+                  Vector3.Dot(triangle.Normal, cross1) > 0 &&
+                  Vector3.Dot(triangle.Normal, cross2) > 0)) return;
             
             CheckDistanceUpdateHit(intersectionPoint, triangle);
         }
@@ -119,11 +146,6 @@ namespace RayTracer
             _minDist = distance;
             _hit = intersectionPoint;
             _hitObject = objectHit;
-        }
-
-        public bool IsLightObstructed(float distanceToLight)
-        {
-            throw new NotImplementedException();
         }
     }
 }

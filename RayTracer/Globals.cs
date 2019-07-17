@@ -26,5 +26,7 @@ namespace RayTracer
         public static Vector3 LookAtPoint { get; set; }
         public static float[] Attenuation { get; set; } = new float[] {1, 0, 0};
         public static List<Light> Lights { get; } = new List<Light>();
+        public const float Delta = 0.01f;
+        public static Matrix4x4 ModelView { get; set; }
     }
 }

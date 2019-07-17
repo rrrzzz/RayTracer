@@ -11,13 +11,17 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="ColorFinder.cs" t="Include" />
         <e p="Extensions.cs" t="Include" />
-        <e p="GeometryObject.cs" t="Include" />
+        <e p="GeometryObjects" t="Include">
+          <e p="GeometryObject.cs" t="Include" />
+          <e p="ObjectProperties.cs" t="Include" />
+          <e p="Sphere.cs" t="Include" />
+          <e p="Triangle.cs" t="Include" />
+        </e>
         <e p="Globals.cs" t="Include" />
         <e p="Helpers.cs" t="Include" />
         <e p="Intersection.cs" t="Include" />
         <e p="Light.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive" />
-        <e p="ObjectProperties.cs" t="Include" />
         <e p="packages.config" t="Include" />
         <e p="Parser.cs" t="Include" />
         <e p="Program.cs" t="Include" />
@@ -26,9 +30,7 @@
         </e>
         <e p="Ray.cs" t="Include" />
         <e p="RayTracer.csproj" t="IncludeRecursive" />
-        <e p="Sphere.cs" t="Include" />
         <e p="Transform.cs" t="Include" />
-        <e p="Triangle.cs" t="Include" />
       </e>
       <e p="RayTracer.sln" t="IncludeFlat" />
     </e>

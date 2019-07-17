@@ -1,4 +1,5 @@
 using Accord.Math;
+using RayTracer.GeometryObjects;
 
 
 namespace RayTracer
@@ -13,13 +14,11 @@ namespace RayTracer
                CenterPos = Helpers.TransformVector(OriginalPos, Transform);
            }
            
-           
            // how will radius change when transform is applied???
            public Vector3 CenterPos { get; set; }
            public float Radius { get; set; }
            
-           // Don't forget to implement somehow
-           public Vector3 Normal { get; set; }
+           // Don't forget to implement normal somehow
            
            public Vector3 OriginalPos { get; }
        }

@@ -50,12 +50,21 @@ namespace RayTracer
 
         public static Vector3 ConvertToVector3(Vector4 v)
         {
-            if (Math.Abs(v.W) < 0.01)
-            {
-                return new Vector3(v.X, v.Y, v.Z);
-            }
-            
-            return new Vector3(v.X / v.W, v.Y / v.W, v.Z / v.W);
+            return Math.Abs(v.W) < Globals.Delta ? 
+                new Vector3(v.X, v.Y, v.Z) : new Vector3(v.X / v.W, v.Y / v.W, v.Z / v.W);
+        }
+
+        public static Matrix4x4 LookAt(Vector3 eye, Vector3 lookAt, Vector3 up)
+        {
+            var z = eye / eye.Norm;
+            var x = Vector3.Cross(up, z);
+            x.Normalize();
+            var y = Vector3.Cross(z, x);
+
+            return new Matrix4x4 {V00 = x.X, V01 = x.Y, V02 = x.Z, V03 = Vector3.Dot(x*-1, eye),
+            V10 = y.X, V11 = y.Y, V12 = y.Z, V13 = Vector3.Dot(y*-1, eye),
+            V20 = z.X, V21 = z.Y, V22 = z.Z, V23 = Vector3.Dot(z*-1, eye),
+            V30 = 0, V31 = 0, V32 = 0, V33 = 1};
         }
     }
 }

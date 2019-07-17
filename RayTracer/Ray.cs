@@ -47,6 +47,7 @@ namespace RayTracer
             dirVec.Normalize();
             
             Direction = EyeInit + dirVec;
+            Direction.Normalize();
         }
     }
 }
