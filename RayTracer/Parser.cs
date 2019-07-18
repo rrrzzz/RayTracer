@@ -79,9 +79,8 @@ namespace RayTracer
                         EyeInit = new Vector3(CmdValues[0], CmdValues[1], CmdValues[2]);
                         LookAtPoint = new Vector3(CmdValues[3], CmdValues[4], CmdValues[5]);
                         UpInit = new Vector3(CmdValues[6], CmdValues[7], CmdValues[8]);
-                        FovYRad = Transform.ToRadians(CmdValues[9]);
+                        FovYRad = Helpers.ToRadians(CmdValues[9]);
                         SetFovX();
-                        ModelView = SetLookAtMatrix();
                         break;
                     
                     case "attenuation":

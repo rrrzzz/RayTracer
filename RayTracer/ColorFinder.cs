@@ -23,14 +23,6 @@ namespace RayTracer
 
         public Color FindColor()
         {
-//            if (_hitObject != null)
-//            {
-//                return Color.Aqua;   
-//            }
-//            return Color.Black;
-            
-            //if (_hitObject == null || !IsRayVisible()) return Color.Black;
-            
             if (_hitObject == null || !IsRayVisible()) return Color.Black;
 
             var pixelColor = _hitObject.ObjProperties.Ambient + _hitObject.ObjProperties.Emission;
@@ -46,27 +38,25 @@ namespace RayTracer
 
         private Vector3 CalculateColorFromLight(Light light)
         {
+            
             var objectNormal = _hitObject.Normal;
             var objectProps = _hitObject.ObjProperties;
             var dirToLight = GetDirectionToLight(light);
+            var eyeDir = _hitPoint - _ray.Origin;
             
-            var eyeDir = (_ray.Origin - _hitPoint).Normalization();
-            //var eyeDir = (new Vector3(0, 0, 0) - _hitPoint).Normalization();
-            
-            
-            var halfAngle = (eyeDir + dirToLight).Normalization();
+            var halfAngle = eyeDir + dirToLight;
+            halfAngle.Normalize();
             
             var lambert = objectProps.Diffuse * light.Color * Math.Max(Vector3.Dot(objectNormal, dirToLight), 0);
             var phong = objectProps.Specular * light.Color * 
                         (float)Math.Pow(Math.Max(Vector3.Dot(objectNormal, halfAngle), 0), objectProps.Shininess);
 
-            var attenuation = GetAttenuation(light);
-            return (lambert + phong) * attenuation;
+            return (lambert + phong) * GetAttenuation(light);
         }
 
         private float GetAttenuation(Light light)
         {
-            var d = GetDistanceToLight(light, _hitPoint);
+            var d = GetDistanceToLight(light);
             var c0 = light.Attenuation[0];
             var c1 = light.Attenuation[1];
             var c2 = light.Attenuation[2];
@@ -77,20 +67,14 @@ namespace RayTracer
 
         private bool IsRayVisible()
         {
-            if (Globals.Lights.Count == 0) return true;
-            
-            //move hitPoint closer lo light a little before checking visibility
             var isVisible = false;
             
             foreach (var light in Globals.Lights)
             {
+                var distanceToLight = GetDistanceToLight(light);
                 var directionToLight = GetDirectionToLight(light);
-
-                var hitPoint = _hitPoint + directionToLight / 1000; 
-                
-                var distanceToLight = GetDistanceToLight(light, hitPoint);
                     
-                var rayToLight = new Ray(hitPoint, directionToLight);
+                var rayToLight = new Ray(_hitPoint, directionToLight);
                 
                 var intersection = new Intersection(rayToLight);
 
@@ -105,7 +89,7 @@ namespace RayTracer
 
         private Vector3 GetDirectionToLight(Light light)
         {
-            var lightCoords = Transform.ConvertToVector3(light.Coordinates);
+            var lightCoords = Helpers.ConvertToVector3(light.Coordinates);
             
             if (Math.Abs(light.Coordinates.W) < Globals.Delta)
             {
@@ -118,10 +102,10 @@ namespace RayTracer
             return directionToLight;
         }
 
-        private float GetDistanceToLight(Light light, Vector3 hitPoint)
+        private float GetDistanceToLight(Light light)
         {
             if (Math.Abs(light.Coordinates.W) < Globals.Delta) return float.MaxValue;
-            var vectorToLight = Transform.ConvertToVector3(light.Coordinates) - hitPoint;
+            var vectorToLight = Helpers.ConvertToVector3(light.Coordinates) - _hitPoint;
             return vectorToLight.Norm;
         }
     }

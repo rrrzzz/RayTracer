@@ -10,16 +10,21 @@ namespace RayTracer
         public Vector3 C { get; }
 
         //Note the counter-clockwise order
-        public Triangle(Vector3 a, Vector3 b, Vector3 c, ObjectProperties objProps, Matrix4x4 transform)
+        public Triangle(Vector3 a, Vector3 c, Vector3 b, ObjectProperties objProps, Matrix4x4 transform)
             : base(objProps, transform)
         {
-            A = Transform.TransformVector(a, TransformMat);
-            B = Transform.TransformVector(b, TransformMat);
-            C = Transform.TransformVector(c, TransformMat);
-
+            A = Helpers.TransformVector(a, Transform);
+            B = Helpers.TransformVector(b, Transform);
+            C = Helpers.TransformVector(c, Transform);
+            
             CalculateNormal();
         }
 
-        private void CalculateNormal() => Normal = Vector3.Cross(B - A, C - A).Normalization();
+        private void CalculateNormal()
+        {
+            var vec = Vector3.Cross(C - A, B - A);
+            vec.Normalize();
+            Normal = vec;
+        }
     }
 }

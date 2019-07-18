@@ -68,110 +68,53 @@ namespace RayTracer
 
         private void FindSphereIntersection(Sphere sphere)
         {
-            Vector3 rayOrigin;
+            float multiplier;
 
-            if (!sphere.CenterPos.IsEqual(sphere.OriginalPos))
-            {
-                var inverseTransform = Transform.GetInverseMatrix4X4(mat: sphere.TransformMat);
-                rayOrigin = Transform.TransformVector(_ray.Origin, inverseTransform);
-            }
-            else rayOrigin = _ray.Origin;
+            var inverseTransform = Helpers.GetInverseMatrix4X4(sphere.Transform);
+            var rayOriginTrans = Helpers.TransformVector(_ray.Origin, inverseTransform);
+            var rayDirectionTrans = Helpers.TransformZeroWVector(_ray.Direction, inverseTransform);
             
-            var a = Vector3.Dot(_ray.Direction, _ray.Direction);
-            var b = 2 * Vector3.Dot(_ray.Direction, rayOrigin - sphere.OriginalPos);
-            var c = Vector3.Dot(rayOrigin - sphere.OriginalPos, rayOrigin - sphere.OriginalPos) -
+            var a = Vector3.Dot(rayDirectionTrans, rayDirectionTrans);
+            var b = 2 * Vector3.Dot(rayDirectionTrans, (rayOriginTrans - sphere.OriginalPos));
+            var c = Vector3.Dot(rayOriginTrans - sphere.OriginalPos, rayOriginTrans - sphere.OriginalPos) -
                     sphere.Radius * sphere.Radius;
 
-            var multiplier = GetSmallestPositiveQuadraticRoot(a, b, c);
+            var discriminant = b * b - 4 * a * c;
+
+            if (discriminant < 0) return;
+            
+            //this is multiplier of inversed ray, before point transform
+            if (Math.Abs(discriminant) < Globals.Delta) multiplier = -b / 2*a;
+            else
+            {
+                var mult1 = (-b + Math.Sqrt(discriminant)) / 2 * a;
+                var mult2 = (-b - Math.Sqrt(discriminant)) / 2 * a;
+
+                multiplier = (float)Math.Min(mult1, mult2);
+                multiplier = multiplier > 0 ? multiplier : (float)Math.Max(mult1, mult2);
+            }
+            
             if (multiplier <= 0) return;
 
-            var intersectionPoint = rayOrigin + _ray.Direction * multiplier;
-
-            if (!sphere.CenterPos.IsEqual(sphere.OriginalPos)) intersectionPoint = 
-                Transform.TransformVector(intersectionPoint, sphere.TransformMat);
+            var intersectionPoint = rayOriginTrans + rayDirectionTrans * multiplier;
+            
+            //is this really vector from rayOrigin? not from 0,0,0?
+            // transform sphere normal here inverse transpose! and think about where to store spehere normal
+            intersectionPoint = Helpers.TransformVector(intersectionPoint, sphere.Transform);
             
             sphere.Normal = intersectionPoint - sphere.CenterPos;
             sphere.Normal.Normalize();
             
             CheckDistanceUpdateHit(intersectionPoint, sphere);
         }
-
-        private float GetSmallestPositiveQuadraticRoot(float a, float b, float c)
-        {
-            float root;
-            var discriminant = b * b - 4 * a * c;
-
-            if (discriminant < 0) return -1;
-            
-            if (Math.Abs(discriminant) < Globals.Delta) root = -b / (2*a);
-            else
-            {
-                var mult1 = (-b + Math.Sqrt(discriminant)) / (2 * a);
-                var mult2 = (-b - Math.Sqrt(discriminant)) / (2 * a);
-
-                root = (float)Math.Min(mult1, mult2);
-                root = root > 0 ? root : (float)Math.Max(mult1, mult2);
-            }
-
-            return root;
-        }
-
+        
         private void FindTriangleIntersection(Triangle triangle)
         {
-            var rayVector = _ray.Direction;
-            var rayOrigin = _ray.Origin;
-            var vertex0 = triangle.A;
-            var vertex1 = triangle.B;
-            var vertex2 = triangle.C;
-            
-            var edge1 = vertex1 - vertex0;
-            var edge2 = vertex2 - vertex0;
-            var h = Vector3.Cross(rayVector, edge2);
-            var a = Vector3.Dot(edge1,h);
-            
-            if (a > -Globals.Delta && a < Globals.Delta) {
-                return;    // This ray is parallel to this triangle.
-            }
-            var f = 1.0 / a;
-            var s = rayOrigin - vertex0;
-            var u = f * Vector3.Dot(s,h);
-            if (u < 0.0 || u > 1.0) {
-                return;
-            }
-            
-            var q = Vector3.Cross(s, edge1);
-            var v = f * Vector3.Dot(rayVector,q);
-            if (v < 0.0 || u + v > 1.0) {
-                return;
-            }
-            // At this stage we can compute t to find out where the intersection point is on the line.
-            var t = (float)(f * Vector3.Dot(edge2, q));
-            
-            if (!(t > Globals.Delta)) return;
-            var intersectionPoint = rayOrigin + rayVector * t;
-            CheckDistanceUpdateHit(intersectionPoint, triangle);
-        }
-        
-        private void FindTriangleIntersectionEdges(Triangle triangle)
-        {
+            if (Math.Abs(Vector3.Dot(_ray.Direction, triangle.Normal)) < Globals.Delta) return;
 
-            var a = triangle.B - triangle.A;
-            var b = triangle.C - triangle.A;
-
-            var n = Vector3.Cross(a, b);
-            var nDot = Vector3.Dot(n, triangle.A);
-
-            var res = Vector3.Dot(n, _ray.Origin);
-
-            var res2 = Vector3.Dot(n, new Vector3(0, 0, 0));
-            
-            var triVertMinusRayOrigin = triangle.A - _ray.Origin;
-            var rayDirDotTriNormal = Vector3.Dot(_ray.Direction, triangle.Normal);
-            
-            if (Math.Abs(rayDirDotTriNormal) < Globals.Delta) return;
-
-            var multiplier = Vector3.Dot(triVertMinusRayOrigin, triangle.Normal) / 
-                             rayDirDotTriNormal;
+            var multiplier = (Vector3.Dot(triangle.A, triangle.Normal) -
+                          Vector3.Dot(_ray.Origin, triangle.Normal)) /
+                         Vector3.Dot(_ray.Direction, triangle.Normal);
 
             if (multiplier <= 0) return;
 

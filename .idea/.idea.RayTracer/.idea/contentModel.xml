@@ -18,6 +18,7 @@
           <e p="Triangle.cs" t="Include" />
         </e>
         <e p="Globals.cs" t="Include" />
+        <e p="Helpers.cs" t="Include" />
         <e p="Intersection.cs" t="Include" />
         <e p="Light.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive" />
