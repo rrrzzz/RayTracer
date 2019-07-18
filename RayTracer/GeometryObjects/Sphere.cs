@@ -11,14 +11,11 @@ namespace RayTracer
            {
                OriginalPos = centerPos;
                Radius = r;
-               CenterPos = Helpers.TransformVector(OriginalPos, Transform);
+               CenterPos = Transform.TransformVector(OriginalPos, TransformMat);
            }
            
-           // how will radius change when transform is applied???
            public Vector3 CenterPos { get; set; }
            public float Radius { get; set; }
-           
-           // Don't forget to implement normal somehow
            
            public Vector3 OriginalPos { get; }
        }

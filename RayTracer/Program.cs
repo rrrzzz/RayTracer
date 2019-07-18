@@ -1,24 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using Accord.Math;
+using System.IO;
+using System.Net;
 using static RayTracer.Globals;
 
 namespace RayTracer
 {
     internal class Program
     {
+        private const string DefaultPath = @"D:\Docs\Courses\Computer graphics edx\testscenes\mytest.txt";
+        
         public static void Main(string[] args)
         {
-            var testFilePath = @"D:\Docs\Courses\Computer graphics edx\testscenes\scene1.test";
+            const string testFilePath = DefaultPath;
             var parser = new Parser();
             parser.ReadFile(testFilePath);
+
             CreateImage();
         }
 
         private static void CreateImage()
         {
+            
             Ray.InitializeCoordinateFrame();
             var p = new Bitmap(ImageWidth,ImageHeight);
 
@@ -29,18 +33,21 @@ namespace RayTracer
                     var ray = new Ray(i + 0.5f, j + 0.5f);
                     var intersection = new Intersection(ray);
                     var intersectionInfo = intersection.FindClosestIntersection();
-                    if (intersectionInfo.HitObject != null)
-                    {
-                        Console.WriteLine("Found object!");
-                    }
+
                     var colorFinder = new ColorFinder(ray, intersectionInfo);
                     var color = colorFinder.FindColor();
                     
                     p.SetPixel(i, j, color);
                 }
             }
-            
-            p.Save(@"D:\Docs\Courses\Computer graphics edx\img.png", ImageFormat.Png);
+
+            var postfix = 0;
+            var filename = @"D:\Docs\Courses\Computer graphics edx\img.png";
+            while (File.Exists(filename))
+            {
+                filename = $@"D:\Docs\Courses\Computer graphics edx\img{postfix++}.png";
+            }
+            p.Save(filename, ImageFormat.Png);
         }
     }
 }

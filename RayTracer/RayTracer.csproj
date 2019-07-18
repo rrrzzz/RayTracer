@@ -44,10 +44,6 @@
           <HintPath>..\packages\Accord.Math.3.8.2-alpha\lib\net46\Accord.Math.Core.dll</HintPath>
           <Private>True</Private>
         </Reference>
-        <Reference Include="GameMath, Version=1.6.21.6747, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\packages\GameMath.Net.Numerics.1.6.21.6747\lib\GameMath.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
         <Reference Include="mscorlib" />
         <Reference Include="System" />
         <Reference Include="System.Core" />
@@ -69,7 +65,6 @@
         <Compile Include="GeometryObjects\Sphere.cs" />
         <Compile Include="GeometryObjects\Triangle.cs" />
         <Compile Include="Globals.cs" />
-        <Compile Include="Helpers.cs" />
         <Compile Include="Intersection.cs" />
         <Compile Include="Light.cs" />
         <Compile Include="Parser.cs" />
