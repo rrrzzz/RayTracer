@@ -68,14 +68,9 @@ namespace RayTracer
 
         private void FindSphereIntersection(Sphere sphere)
         {
-            Vector3 rayOrigin;
-
-            if (!sphere.CenterPos.IsEqual(sphere.OriginalPos))
-            {
-                var inverseTransform = Transform.GetInverseMatrix4X4(mat: sphere.TransformMat);
-                rayOrigin = Transform.TransformVector(_ray.Origin, inverseTransform);
-            }
-            else rayOrigin = _ray.Origin;
+            var rayOrigin = sphere.CenterPos.IsEqual(sphere.OriginalPos) ? 
+                _ray.Origin : Transform.TransformVector(_ray.Origin, sphere.InverseTransformMat);
+            
             
             var a = Vector3.Dot(_ray.Direction, _ray.Direction);
             var b = 2 * Vector3.Dot(_ray.Direction, rayOrigin - sphere.OriginalPos);
@@ -145,6 +140,7 @@ namespace RayTracer
                 return;
             }
             // At this stage we can compute t to find out where the intersection point is on the line.
+            
             var t = (float)(f * Vector3.Dot(edge2, q));
             
             if (!(t > Globals.Delta)) return;
@@ -197,7 +193,7 @@ namespace RayTracer
 
         private void CheckDistanceUpdateHit(Vector3 intersectionPoint, GeometryObject objectHit)
         {
-            var distance = intersectionPoint.Norm;
+            var distance = (intersectionPoint - _ray.Origin).Norm;
 
             if (!(distance < _minDist) || distance <= 0) return;
             _minDist = distance;

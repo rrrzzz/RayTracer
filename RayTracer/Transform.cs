@@ -8,9 +8,9 @@ namespace RayTracer
     {
         public static Matrix4x4 GetTranslationMatrix(Vector3 v)
         {
-            return new Matrix4x4{ V00 = 0, V01 = 0, V02 = 0, V03 = v.X,
-                                  V10 = 0, V11 = 0, V12 = 0, V13 = v.Y,
-                                  V20 = 0, V21 = 0, V22 = 0, V23 = v.Z,
+            return new Matrix4x4{ V00 = 1, V01 = 0, V02 = 0, V03 = v.X,
+                                  V10 = 0, V11 = 1, V12 = 0, V13 = v.Y,
+                                  V20 = 0, V21 = 0, V22 = 1, V23 = v.Z,
                                   V30 = 0, V31 = 0, V32 = 0, V33 = 1 };
         }
 
@@ -37,6 +37,7 @@ namespace RayTracer
             var rotMat3X3 = I * (float)Math.Cos(degRad) + axisMulAxisTransposed * (float)(1 - Math.Cos(degRad)) + 
                       crossProdMatrix * (float)Math.Sin(degRad);
             
+            var ret = Matrix4x4.CreateFromRotation(rotMat3X3);
             return Matrix4x4.CreateFromRotation(rotMat3X3);
         }
 
@@ -85,6 +86,14 @@ namespace RayTracer
             };
 
             var inverse = matrix.Inverse();
+            
+            var ret = new Matrix4x4
+            {
+                V00 = inverse[0, 0], V01 = inverse[0, 1], V02 = inverse[0, 2], V03 = inverse[0, 3],
+                V10 = inverse[1, 0], V11 = inverse[1, 1], V12 = inverse[1, 2], V13 = inverse[1, 3],
+                V20 = inverse[2, 0], V21 = inverse[2, 1], V22 = inverse[2, 2], V23 = inverse[2, 3],
+                V30 = inverse[3, 0], V31 = inverse[3, 1], V32 = inverse[3, 2], V33 = inverse[3, 3]
+            };
             
             return new Matrix4x4
             {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Accord.Math;
 using RayTracer.GeometryObjects;
 
@@ -12,7 +13,7 @@ namespace RayTracer
         private readonly Ray _ray;
         private readonly GeometryObject _hitObject;
         private readonly Vector3 _hitPoint;
-        private readonly List<Light> _visibleLights = new List<Light>();
+        private List<Light> _visibleLights = new List<Light>();
 
         public ColorFinder(Ray ray, IntersectionInfo info)
         {
@@ -29,7 +30,8 @@ namespace RayTracer
 //            }
 //            return Color.Black;
             
-            //if (_hitObject == null || !IsRayVisible()) return Color.Black;
+//            if (_hitObject == null) return Color.Black;
+//            _visibleLights = Globals.Lights;
             
             if (_hitObject == null || !IsRayVisible()) return Color.Black;
 

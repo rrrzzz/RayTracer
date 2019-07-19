@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using Accord.Math;
+using RayTracer.GeometryObjects;
 using static RayTracer.Globals;
 using static RayTracer.Transform;
 

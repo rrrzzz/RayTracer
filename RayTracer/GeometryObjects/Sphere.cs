@@ -1,8 +1,6 @@
 using Accord.Math;
-using RayTracer.GeometryObjects;
 
-
-namespace RayTracer
+namespace RayTracer.GeometryObjects
    {
        public class Sphere : GeometryObject
        {
@@ -12,11 +10,12 @@ namespace RayTracer
                OriginalPos = centerPos;
                Radius = r;
                CenterPos = Transform.TransformVector(OriginalPos, TransformMat);
+               InverseTransformMat = Transform.GetInverseMatrix4X4(TransformMat);
            }
            
            public Vector3 CenterPos { get; set; }
            public float Radius { get; set; }
-           
+           public Matrix4x4 InverseTransformMat { get; }
            public Vector3 OriginalPos { get; }
        }
    }

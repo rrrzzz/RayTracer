@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Accord.Math;
+using RayTracer.GeometryObjects;
 
 namespace RayTracer
 {
@@ -14,7 +15,7 @@ namespace RayTracer
         public static float FovYRad { get; set; }
         public static float FovXRad { get; set; }
         public static Vector3[] Vertices { get; set; }
-        public static List<Triangle> Triangles { get; } = new List<Triangle>();
+        public static List<Triangle> Triangles { get; set; } = new List<Triangle>();
         public static List<Sphere> Spheres { get; } = new List<Sphere>();
         public static float Shininess { get; set; }
         public static Vector3 Ambient { get; set; } = new Vector3(.2f,.2f,.2f);
