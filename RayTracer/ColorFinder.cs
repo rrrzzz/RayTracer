@@ -77,6 +77,7 @@ namespace RayTracer
         }
        
 
+        //Is this correct? Ambient light may affect the scene even if there are no point lights on object
         private bool IsRayVisible()
         {
             if (Globals.Lights.Count == 0) return true;

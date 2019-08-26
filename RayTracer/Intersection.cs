@@ -48,6 +48,7 @@ namespace RayTracer
             foreach (var sphere in Globals.Spheres)
             {
                 FindSphereIntersection(sphere);
+                
                 if (_minDist < distanceToLight)
                 {
                     return true;
@@ -68,29 +69,29 @@ namespace RayTracer
 
         private void FindSphereIntersection(Sphere sphere)
         {
-            var rayOrigin = sphere.CenterPos.IsEqual(sphere.OriginalPos) ? 
-                _ray.Origin : Transform.TransformVector(_ray.Origin, sphere.InverseTransformMat);
+            var rayOrigin = Transform.TransformVector(_ray.Origin, sphere.InverseTransformMat);
             
+            var rayDir = Transform.TransformZeroWVector(_ray.Direction, sphere.InverseTransformMat);
+            rayDir.Normalize();
             
-            var a = Vector3.Dot(_ray.Direction, _ray.Direction);
-            var b = 2 * Vector3.Dot(_ray.Direction, rayOrigin - sphere.OriginalPos);
+            var a = Vector3.Dot(rayDir, rayDir);
+            var b = 2 * Vector3.Dot(rayDir, rayOrigin - sphere.OriginalPos);
             var c = Vector3.Dot(rayOrigin - sphere.OriginalPos, rayOrigin - sphere.OriginalPos) -
                     sphere.Radius * sphere.Radius;
-
+            
             var multiplier = GetSmallestPositiveQuadraticRoot(a, b, c);
             if (multiplier <= 0) return;
 
-            var intersectionPoint = rayOrigin + _ray.Direction * multiplier;
+            var intersectionPoint = rayOrigin + rayDir * multiplier;
 
-            if (!sphere.CenterPos.IsEqual(sphere.OriginalPos)) intersectionPoint = 
-                Transform.TransformVector(intersectionPoint, sphere.TransformMat);
+            intersectionPoint = Transform.TransformVector(intersectionPoint, sphere.TransformMat);
             
             sphere.Normal = intersectionPoint - sphere.CenterPos;
             sphere.Normal.Normalize();
             
             CheckDistanceUpdateHit(intersectionPoint, sphere);
         }
-
+        
         private float GetSmallestPositiveQuadraticRoot(float a, float b, float c)
         {
             float root;

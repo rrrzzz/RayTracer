@@ -114,8 +114,7 @@ namespace RayTracer
         public static Vector3 TransformZeroWVector(Vector3 v, Matrix4x4 transformMat)
         {
             var homogeneousPos = transformMat * new Vector4(v.X, v.Y, v.Z, 0);
-            var dehomogenizedPosition = homogeneousPos / homogeneousPos.W;
-            return new Vector3(dehomogenizedPosition.X, dehomogenizedPosition.Y, dehomogenizedPosition.Z);
+            return new Vector3(homogeneousPos.X, homogeneousPos.Y, homogeneousPos.Z);
         }
 
         public static Vector3 ConvertToVector3(Vector4 v)

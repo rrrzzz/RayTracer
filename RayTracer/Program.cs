@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Net;
 using static RayTracer.Globals;
 
 namespace RayTracer
@@ -14,6 +14,8 @@ namespace RayTracer
         
         public static void Main(string[] args)
         {
+            var timer = new Stopwatch();
+            timer.Start();
             const string testFilePath = DefaultPath;
             var parser = new Parser();
             parser.ReadFile(testFilePath);
@@ -21,6 +23,8 @@ namespace RayTracer
             Ray.InitializeCoordinateFrame();
             //CreateSeparateTriangles();
             CreateImage();
+            timer.Stop();
+            Console.WriteLine(timer.Elapsed);
         }
 
         private static void CreateSeparateTriangles()
@@ -43,7 +47,7 @@ namespace RayTracer
             {
                 for (var j = 0; j < ImageHeight; j++)
                 {
-                    Console.WriteLine($"Current x pixel: {i}. Current y pixel: {j}.");
+                    //Console.WriteLine($"Current x pixel: {i}. Current y pixel: {j}.");
                     var ray = new Ray(i + 0.5f, j + 0.5f);
                     var intersection = new Intersection(ray);
                     var intersectionInfo = intersection.FindClosestIntersection();
