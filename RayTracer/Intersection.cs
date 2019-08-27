@@ -23,6 +23,7 @@ namespace RayTracer
         private float _minDist = float.MaxValue;
         private GeometryObject _hitObject;
         
+        
         public Intersection(Ray ray)
         {
             _ray = ray;
@@ -48,20 +49,13 @@ namespace RayTracer
             foreach (var sphere in Globals.Spheres)
             {
                 FindSphereIntersection(sphere);
-                
-                if (_minDist < distanceToLight)
-                {
-                    return true;
-                }
+                if (_minDist < distanceToLight) return true;
             }
             
             foreach (var triangle in Globals.Triangles)
             {
                 FindTriangleIntersection(triangle);
-                if (_minDist < distanceToLight)
-                {
-                    return true;
-                }
+                if (_minDist < distanceToLight) return true;
             }
 
             return false;
@@ -72,8 +66,8 @@ namespace RayTracer
             var rayOrigin = Transform.TransformVector(_ray.Origin, sphere.InverseTransformMat);
             
             var rayDir = Transform.TransformZeroWVector(_ray.Direction, sphere.InverseTransformMat);
-            rayDir.Normalize();
-            
+            rayDir = rayDir.Normalization();
+
             var a = Vector3.Dot(rayDir, rayDir);
             var b = 2 * Vector3.Dot(rayDir, rayOrigin - sphere.OriginalPos);
             var c = Vector3.Dot(rayOrigin - sphere.OriginalPos, rayOrigin - sphere.OriginalPos) -
@@ -86,8 +80,8 @@ namespace RayTracer
 
             intersectionPoint = Transform.TransformVector(intersectionPoint, sphere.TransformMat);
             
-            sphere.Normal = intersectionPoint - sphere.CenterPos;
-            sphere.Normal.Normalize();
+            //problem here get incorrect diffuse on ellipsoids
+            sphere.Normal = (intersectionPoint - sphere.CenterPos).Normalization();
             
             CheckDistanceUpdateHit(intersectionPoint, sphere);
         }
@@ -151,7 +145,6 @@ namespace RayTracer
         
         private void FindTriangleIntersectionEdges(Triangle triangle)
         {
-
             var a = triangle.B - triangle.A;
             var b = triangle.C - triangle.A;
 

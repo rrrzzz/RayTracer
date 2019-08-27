@@ -4,7 +4,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using Accord.Math;
+using RayTracer.GeometryObjects;
 using static RayTracer.Globals;
+using Vector3 = Accord.Math.Vector3;
 
 namespace RayTracer
 {

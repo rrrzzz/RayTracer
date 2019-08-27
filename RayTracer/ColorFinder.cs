@@ -33,7 +33,9 @@ namespace RayTracer
 //            if (_hitObject == null) return Color.Black;
 //            _visibleLights = Globals.Lights;
             
-            if (_hitObject == null || !IsRayVisible()) return Color.Black;
+            //if (_hitObject == null || !IsRayVisible()) return Color.Black;
+            if (_hitObject == null) return Color.Black;
+            GetVisibleLights();
 
             var pixelColor = _hitObject.ObjProperties.Ambient + _hitObject.ObjProperties.Emission;
             
@@ -78,6 +80,29 @@ namespace RayTracer
        
 
         //Is this correct? Ambient light may affect the scene even if there are no point lights on object
+        
+        private void GetVisibleLights()
+        {
+            //move hitPoint closer lo light a little before checking visibility
+            
+            foreach (var light in Globals.Lights)
+            {
+                var directionToLight = GetDirectionToLight(light);
+
+                var hitPoint = _hitPoint + directionToLight / 1000; 
+                
+                var distanceToLight = GetDistanceToLight(light, hitPoint);
+                    
+                var rayToLight = new Ray(hitPoint, directionToLight);
+                
+                var intersection = new Intersection(rayToLight);
+
+                if (intersection.IsLightObstructed(distanceToLight)) continue;
+
+                _visibleLights.Add(light);
+            }
+        }
+        
         private bool IsRayVisible()
         {
             if (Globals.Lights.Count == 0) return true;
