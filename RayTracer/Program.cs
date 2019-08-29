@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using static RayTracer.Globals;
 
 namespace RayTracer
@@ -42,15 +43,16 @@ namespace RayTracer
             {
                 for (var j = 0; j < ImageHeight; j++)
                 {
+                    //i=316 j=83 bug
                     //Console.WriteLine($"Current x pixel: {i}. Current y pixel: {j}.");
                     var ray = new Ray(i + 0.5f, j + 0.5f);
                     var intersection = new Intersection(ray);
                     var intersectionInfo = intersection.FindClosestIntersection();
-
+                    ColorFinder.RecursionLevel = 0;
                     var colorFinder = new ColorFinder(ray, intersectionInfo);
-                    var color = colorFinder.FindColor();
-                    
-                    p.SetPixel(i, j, color);
+                    var pixelColor = colorFinder.FindColor();
+                    var rgb = pixelColor.ToArray().Select(x => (int)x.Map(0, 1, 0, 255)).ToArray();
+                    p.SetPixel(i, j, Color.FromArgb(255, rgb[0], rgb[1], rgb[2]));
                 }
             }
             //p.Save(@"D:\Docs\Courses\Computer graphics edx\img.png", ImageFormat.Png);

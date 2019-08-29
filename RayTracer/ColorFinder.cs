@@ -10,6 +10,7 @@ namespace RayTracer
 {
     public class ColorFinder
     {
+        public static int RecursionLevel { get; set; }
         private readonly Ray _ray;
         private readonly GeometryObject _hitObject;
         private readonly Vector3 _hitPoint;
@@ -22,20 +23,38 @@ namespace RayTracer
             _hitObject = info.HitObject;
         }
 
-        public Color FindColor()
+        public Vector3 FindColor()
         {
-            if (_hitObject == null) return Color.Black;
+            if (_hitObject == null) return new Vector3(0);
             GetVisibleLights();
 
-            var pixelColor = _hitObject.ObjProperties.Ambient + _hitObject.ObjProperties.Emission;
-            
+            var pixelColor = _hitObject.ObjProperties.Ambient + _hitObject.ObjProperties.Emission; 
+            if (_hitObject.ObjProperties.Specular.Norm > 0 && RecursionLevel < Globals.RecursionMaxDepth - 1)
+            {
+                pixelColor += _hitObject.ObjProperties.Specular * FindRecursiveIntensity();
+            }
             foreach (var light in _visibleLights)
             {
                 pixelColor += CalculateColorFromLight(light);
             }
 
-            var rgb = pixelColor.ToArray().Select(x => (int)x.Map(0, 1, 0, 255)).ToArray();
-            return Color.FromArgb(255, rgb[0], rgb[1], rgb[2]);
+            return pixelColor;
+        }
+
+        private Vector3 FindRecursiveIntensity()
+        {
+            RecursionLevel++;
+            var reflectedRay = GetReflectedRay();
+            var intersection = new Intersection(reflectedRay);
+            var intersectionInfo = intersection.FindClosestIntersection();
+            var colorFinder = new ColorFinder(reflectedRay, intersectionInfo);
+            return colorFinder.FindColor();
+        }
+
+        private Ray GetReflectedRay()
+        {
+            var reflectedDirection = _ray.Direction + _hitObject.Normal * 2 * Vector3.Dot(_ray.Direction * -1, _hitPoint);
+            return new Ray(_hitPoint, reflectedDirection);
         }
 
         private Vector3 CalculateColorFromLight(Light light)

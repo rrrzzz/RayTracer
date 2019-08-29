@@ -123,10 +123,8 @@ namespace RayTracer
                 new Vector3(v.X, v.Y, v.Z) : new Vector3(v.X / v.W, v.Y / v.W, v.Z / v.W);
         }
 
-        public static Matrix4x4 TransposeMat4X4(Matrix4x4 mat4)
+        public static Matrix4x4 TransposeMat4X4(Matrix4x4 mat4) 
         {
-            var res = new Matrix4x4();
-
             return new Matrix4x4
             {
                 V00 = mat4.V00, V01 = mat4.V10, V02 = mat4.V20, V03 = mat4.V30,
@@ -134,7 +132,6 @@ namespace RayTracer
                 V20 = mat4.V02, V21 = mat4.V12, V22 = mat4.V22, V23 = mat4.V32,
                 V30 = mat4.V30, V31 = mat4.V13, V32 = mat4.V23, V33 = mat4.V33
             };
-
         }
     }
 }
