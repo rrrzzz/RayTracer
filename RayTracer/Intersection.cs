@@ -66,8 +66,7 @@ namespace RayTracer
             var rayOrigin = Transform.TransformVector(_ray.Origin, sphere.InverseTransformMat);
             
             var rayDir = Transform.TransformZeroWVector(_ray.Direction, sphere.InverseTransformMat);
-            rayDir = rayDir.Normalization();
-
+            
             var a = Vector3.Dot(rayDir, rayDir);
             var b = 2 * Vector3.Dot(rayDir, rayOrigin - sphere.OriginalPos);
             var c = Vector3.Dot(rayOrigin - sphere.OriginalPos, rayOrigin - sphere.OriginalPos) -
@@ -78,10 +77,13 @@ namespace RayTracer
 
             var intersectionPoint = rayOrigin + rayDir * multiplier;
 
-            intersectionPoint = Transform.TransformVector(intersectionPoint, sphere.TransformMat);
+            var transpose = Transform.TransposeMat4X4(sphere.InverseTransformMat);
             
-            //problem here get incorrect diffuse on ellipsoids
-            sphere.Normal = (intersectionPoint - sphere.CenterPos).Normalization();
+            sphere.Normal = intersectionPoint - sphere.OriginalPos;
+            sphere.Normal = Transform.TransformZeroWVector(sphere.Normal, transpose);
+            sphere.Normal = sphere.Normal.Normalization();
+
+            intersectionPoint = Transform.TransformVector(intersectionPoint, sphere.TransformMat);
             
             CheckDistanceUpdateHit(intersectionPoint, sphere);
         }

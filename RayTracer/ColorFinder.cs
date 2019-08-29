@@ -24,16 +24,6 @@ namespace RayTracer
 
         public Color FindColor()
         {
-//            if (_hitObject != null)
-//            {
-//                return Color.Aqua;   
-//            }
-//            return Color.Black;
-            
-//            if (_hitObject == null) return Color.Black;
-//            _visibleLights = Globals.Lights;
-            
-            //if (_hitObject == null || !IsRayVisible()) return Color.Black;
             if (_hitObject == null) return Color.Black;
             GetVisibleLights();
 
@@ -55,11 +45,9 @@ namespace RayTracer
             var dirToLight = GetDirectionToLight(light);
             
             var eyeDir = (_ray.Origin - _hitPoint).Normalization();
-            //var eyeDir = (new Vector3(0, 0, 0) - _hitPoint).Normalization();
-            
             
             var halfAngle = (eyeDir + dirToLight).Normalization();
-            
+
             var lambert = objectProps.Diffuse * light.Color * Math.Max(Vector3.Dot(objectNormal, dirToLight), 0);
             var phong = objectProps.Specular * light.Color * 
                         (float)Math.Pow(Math.Max(Vector3.Dot(objectNormal, halfAngle), 0), objectProps.Shininess);
@@ -78,13 +66,8 @@ namespace RayTracer
             return 1 / (c0 + c1 * d + c2 * d * d);
         }
        
-
-        //Is this correct? Ambient light may affect the scene even if there are no point lights on object
-        
         private void GetVisibleLights()
         {
-            //move hitPoint closer lo light a little before checking visibility
-            
             foreach (var light in Globals.Lights)
             {
                 var directionToLight = GetDirectionToLight(light);
@@ -103,34 +86,6 @@ namespace RayTracer
             }
         }
         
-        private bool IsRayVisible()
-        {
-            if (Globals.Lights.Count == 0) return true;
-            
-            //move hitPoint closer lo light a little before checking visibility
-            var isVisible = false;
-            
-            foreach (var light in Globals.Lights)
-            {
-                var directionToLight = GetDirectionToLight(light);
-
-                var hitPoint = _hitPoint + directionToLight / 1000; 
-                
-                var distanceToLight = GetDistanceToLight(light, hitPoint);
-                    
-                var rayToLight = new Ray(hitPoint, directionToLight);
-                
-                var intersection = new Intersection(rayToLight);
-
-                if (intersection.IsLightObstructed(distanceToLight)) continue;
-
-                isVisible = true;
-                _visibleLights.Add(light);
-            }
-
-            return isVisible;
-        }
-
         private Vector3 GetDirectionToLight(Light light)
         {
             var lightCoords = Transform.ConvertToVector3(light.Coordinates);

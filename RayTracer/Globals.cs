@@ -10,7 +10,7 @@ namespace RayTracer
         public static int ImageWidth { get; set; }
         public static int ImageHeight { get; set; }
         public static float AspectRatio { get; set; }
-        public static int RecursionMaxDepth { get; set; }
+        public static int RecursionMaxDepth { get; set; } = 5;
         public static string OutputFilename { get; set; }
         public static float FovYRad { get; set; }
         public static float FovXRad { get; set; }
@@ -25,7 +25,7 @@ namespace RayTracer
         public static Vector3 EyeInit { get; set; }
         public static Vector3 UpInit { get; set; }
         public static Vector3 LookAtPoint { get; set; }
-        public static float[] Attenuation { get; set; } = new float[] {1, 0, 0};
+        public static float[] Attenuation { get; set; } = {1, 0, 0};
         public static List<Light> Lights { get; } = new List<Light>();
         public const float Delta = 0.01f;
         public static Matrix4x4 ModelView { get; set; }

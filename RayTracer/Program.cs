@@ -4,10 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using Accord.Math;
-using RayTracer.GeometryObjects;
 using static RayTracer.Globals;
-using Vector3 = Accord.Math.Vector3;
 
 namespace RayTracer
 {
@@ -17,17 +14,12 @@ namespace RayTracer
         
         public static void Main(string[] args)
         {
-            var timer = new Stopwatch();
-            timer.Start();
             const string testFilePath = DefaultPath;
             var parser = new Parser();
             parser.ReadFile(testFilePath);
             
             Ray.InitializeCoordinateFrame();
-            //CreateSeparateTriangles();
             CreateImage();
-            timer.Stop();
-            Console.WriteLine(timer.Elapsed);
         }
 
         private static void CreateSeparateTriangles()
