@@ -29,7 +29,7 @@ namespace RayTracer
             GetVisibleLights();
 
             var pixelColor = _hitObject.ObjProperties.Ambient + _hitObject.ObjProperties.Emission; 
-            if (_hitObject.ObjProperties.Specular.Norm > 0 && RecursionLevel < Globals.RecursionMaxDepth - 1)
+            if (_hitObject.ObjProperties.Specular.Norm > 0 && RecursionLevel < Globals.RecursionMaxDepth)
             {
                 pixelColor += _hitObject.ObjProperties.Specular * FindRecursiveIntensity();
             }
@@ -53,8 +53,9 @@ namespace RayTracer
 
         private Ray GetReflectedRay()
         {
-            var reflectedDirection = _ray.Direction + _hitObject.Normal * 2 * Vector3.Dot(_ray.Direction * -1, _hitPoint);
-            return new Ray(_hitPoint, reflectedDirection);
+            var reflectedDirection = _ray.Direction - _hitObject.Normal * 2 * Vector3.Dot(_ray.Direction, _hitObject.Normal);
+            
+            return new Ray(_hitPoint + _hitObject.Normal / 1000, reflectedDirection);
         }
 
         private Vector3 CalculateColorFromLight(Light light)
@@ -91,7 +92,7 @@ namespace RayTracer
             {
                 var directionToLight = GetDirectionToLight(light);
 
-                var hitPoint = _hitPoint + directionToLight / 1000; 
+                var hitPoint = _hitPoint + _hitObject.Normal / 1000; 
                 
                 var distanceToLight = GetDistanceToLight(light, hitPoint);
                     

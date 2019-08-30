@@ -118,7 +118,7 @@ namespace RayTracer
                         GetFloatCmdValues(splitLine);
                         lightPos = new Vector4(CmdValues[0], CmdValues[1], CmdValues[2], 0);
                         lightCol = new Vector3(CmdValues[3], CmdValues[4], CmdValues[5]);
-                        Lights.Add(new Light(lightPos, lightCol, Attenuation));
+                        Lights.Add(new Light(lightPos, lightCol, new float[]{1,0,0}));
                         break;
                     
                     case "point":

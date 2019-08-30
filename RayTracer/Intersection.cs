@@ -77,9 +77,8 @@ namespace RayTracer
 
             var intersectionPoint = rayOrigin + rayDir * multiplier;
 
-            var transpose = Transform.TransposeMat4X4(sphere.InverseTransformMat);
-            
             sphere.Normal = intersectionPoint - sphere.OriginalPos;
+            var transpose = Transform.TransposeMat4X4(sphere.InverseTransformMat);
             sphere.Normal = Transform.TransformZeroWVector(sphere.Normal, transpose);
             sphere.Normal = sphere.Normal.Normalization();
 
