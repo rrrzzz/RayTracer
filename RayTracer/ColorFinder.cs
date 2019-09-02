@@ -10,44 +10,46 @@ namespace RayTracer
 {
     public class ColorFinder
     {
-        public static int RecursionLevel { get; set; }
+        private int _recursionLevel;
         private readonly Ray _ray;
         private readonly GeometryObject _hitObject;
         private readonly Vector3 _hitPoint;
         private List<Light> _visibleLights = new List<Light>();
 
-        public ColorFinder(Ray ray, IntersectionInfo info)
+        public ColorFinder(Ray ray, IntersectionInfo info, int recursionLevel)
         {
             _ray = ray;
             _hitPoint = info.HitPoint;
             _hitObject = info.HitObject;
+            _recursionLevel = recursionLevel;
         }
 
         public Vector3 FindColor()
         {
-            if (_hitObject == null) return new Vector3(0);
+            if (_hitObject == null) return new Vector3(0,0,0);
             GetVisibleLights();
 
             var pixelColor = _hitObject.ObjProperties.Ambient + _hitObject.ObjProperties.Emission; 
-            if (_hitObject.ObjProperties.Specular.Norm > 0 && RecursionLevel < Globals.RecursionMaxDepth)
-            {
-                pixelColor += _hitObject.ObjProperties.Specular * FindRecursiveIntensity();
-            }
+            
             foreach (var light in _visibleLights)
             {
                 pixelColor += CalculateColorFromLight(light);
             }
-
+            
+            if (_hitObject.ObjProperties.Specular.Norm > 0 && _recursionLevel < Globals.RecursionMaxDepth)
+            {
+                pixelColor += _hitObject.ObjProperties.Specular * FindRecursiveIntensity();
+            }
+            
             return pixelColor;
         }
 
         private Vector3 FindRecursiveIntensity()
         {
-            RecursionLevel++;
             var reflectedRay = GetReflectedRay();
             var intersection = new Intersection(reflectedRay);
             var intersectionInfo = intersection.FindClosestIntersection();
-            var colorFinder = new ColorFinder(reflectedRay, intersectionInfo);
+            var colorFinder = new ColorFinder(reflectedRay, intersectionInfo, ++_recursionLevel);
             return colorFinder.FindColor();
         }
 
@@ -55,7 +57,7 @@ namespace RayTracer
         {
             var reflectedDirection = _ray.Direction - _hitObject.Normal * 2 * Vector3.Dot(_ray.Direction, _hitObject.Normal);
             
-            return new Ray(_hitPoint + _hitObject.Normal / 1000, reflectedDirection);
+            return new Ray(_hitPoint + _hitObject.Normal / 100000, reflectedDirection);
         }
 
         private Vector3 CalculateColorFromLight(Light light)
@@ -78,6 +80,8 @@ namespace RayTracer
 
         private float GetAttenuation(Light light)
         {
+            if (light.Coordinates.W < Globals.Delta) return 1;
+            
             var d = GetDistanceToLight(light, _hitPoint);
             var c0 = light.Attenuation[0];
             var c1 = light.Attenuation[1];
@@ -92,11 +96,11 @@ namespace RayTracer
             {
                 var directionToLight = GetDirectionToLight(light);
 
-                var hitPoint = _hitPoint + _hitObject.Normal / 1000; 
+                var hitPoint = _hitPoint; 
                 
                 var distanceToLight = GetDistanceToLight(light, hitPoint);
                     
-                var rayToLight = new Ray(hitPoint, directionToLight);
+                var rayToLight = new Ray(hitPoint + _hitObject.Normal / 100000, directionToLight);
                 
                 var intersection = new Intersection(rayToLight);
 
@@ -112,13 +116,11 @@ namespace RayTracer
             
             if (Math.Abs(light.Coordinates.W) < Globals.Delta)
             {
-                lightCoords.Normalize();
-                return lightCoords;
+                return lightCoords.Normalization();
             }
             
             var directionToLight = lightCoords - _hitPoint;
-            directionToLight.Normalize();
-            return directionToLight;
+            return directionToLight.Normalization();
         }
 
         private float GetDistanceToLight(Light light, Vector3 hitPoint)

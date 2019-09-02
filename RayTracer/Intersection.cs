@@ -188,12 +188,13 @@ namespace RayTracer
 
         private void CheckDistanceUpdateHit(Vector3 intersectionPoint, GeometryObject objectHit)
         {
+            ;
             var distance = (intersectionPoint - _ray.Origin).Norm;
 
             if (!(distance < _minDist) || distance <= 0) return;
             _minDist = distance;
-            _hit = intersectionPoint;
             _hitObject = objectHit;
+            _hit = intersectionPoint + objectHit.Normal * Globals.Err;
         }
     }
 }

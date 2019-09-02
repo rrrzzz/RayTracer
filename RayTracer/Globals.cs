@@ -7,6 +7,7 @@ namespace RayTracer
 {
     public static class Globals
     {
+        public const float Err = 1e-12f;
         public static int ImageWidth { get; set; }
         public static int ImageHeight { get; set; }
         public static float AspectRatio { get; set; }

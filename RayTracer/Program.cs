@@ -38,16 +38,20 @@ namespace RayTracer
         private static void CreateImage()
         {
             var p = new Bitmap(ImageWidth,ImageHeight);
-
+            //404 264
             for (var i = 0; i < ImageWidth; i++)
             {
                 for (var j = 0; j < ImageHeight; j++)
                 {
+//                    if (i == 264 && j == 404)
+//                    {
+//                        Console.WriteLine("Gotcha!");
+//                    }
+                    
                     var ray = new Ray(i + 0.5f, j + 0.5f);
                     var intersection = new Intersection(ray);
                     var intersectionInfo = intersection.FindClosestIntersection();
-                    ColorFinder.RecursionLevel = 0;
-                    var colorFinder = new ColorFinder(ray, intersectionInfo);
+                    var colorFinder = new ColorFinder(ray, intersectionInfo,0);
                     var pixelColor = colorFinder.FindColor();
                     var rgb = pixelColor.ToArray().Select(x => (int)x.Map(0, 1, 0, 255)).ToArray();
 
