@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using Accord.Math;
 using static RayTracer.Globals;
 
 namespace RayTracer
@@ -20,6 +21,7 @@ namespace RayTracer
             parser.ReadFile(testFilePath);
             
             Ray.InitializeCoordinateFrame();
+            //CreateDragon();
             CreateImage();
         }
 
@@ -43,7 +45,7 @@ namespace RayTracer
             {
                 for (var j = 0; j < ImageHeight; j++)
                 {
-//                    if (i == 264 && j == 404)
+//                    if (i == 539 && j == 620)
 //                    {
 //                        Console.WriteLine("Gotcha!");
 //                    }
@@ -60,6 +62,45 @@ namespace RayTracer
             }
             //p.Save(@"D:\Docs\Courses\Computer graphics edx\img.png", ImageFormat.Png);
             p.Save(GetFileNameGen(), ImageFormat.Png);
+        }
+        
+        private static void CreateDragon()
+        {
+            var p = new Bitmap(ImageWidth,ImageHeight);
+            
+            for (var i = 0; i < ImageWidth; i++)
+            {
+                for (var j = 0; j < ImageHeight; j++)
+                {
+                    var rgb = GetColor(i, j);
+
+                    p.SetPixel(i, j, Color.FromArgb(255, rgb[0], rgb[1], rgb[2]));
+                }
+            }
+            //p.Save(@"D:\Docs\Courses\Computer graphics edx\img.png", ImageFormat.Png);
+            p.Save(GetFileNameGen(), ImageFormat.Png);
+        }
+
+        private static int[] GetColor(int i, int j)
+        {
+            var rgb = new []{0,0,0};
+            for (int k = 0; k < 8; k++)
+            {
+                for (int z = 0; z < 8; z++)
+                {
+                    var ray = new Ray(i + 0.125f * k, j + 0.125f * z);
+                    var intersection = new Intersection(ray);
+                    var intersectionInfo = intersection.FindClosestIntersection();
+                    var colorFinder = new ColorFinder(ray, intersectionInfo,0);
+                    var pixelColor = colorFinder.FindColor();
+
+                    if (!(pixelColor.Norm > Globals.Delta)) continue;
+                    rgb = pixelColor.ToArray().Select(x => (int)x.Map(0, 1, 0, 255)).ToArray();
+                    return rgb;
+                }
+            }
+
+            return rgb;
         }
 
         private static string GetFileNameGen()

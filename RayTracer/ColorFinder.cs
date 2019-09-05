@@ -44,22 +44,6 @@ namespace RayTracer
             return pixelColor;
         }
 
-        private Vector3 FindRecursiveIntensity()
-        {
-            var reflectedRay = GetReflectedRay();
-            var intersection = new Intersection(reflectedRay);
-            var intersectionInfo = intersection.FindClosestIntersection();
-            var colorFinder = new ColorFinder(reflectedRay, intersectionInfo, ++_recursionLevel);
-            return colorFinder.FindColor();
-        }
-
-        private Ray GetReflectedRay()
-        {
-            var reflectedDirection = _ray.Direction - _hitObject.Normal * 2 * Vector3.Dot(_ray.Direction, _hitObject.Normal);
-            
-            return new Ray(_hitPoint + _hitObject.Normal / 100000, reflectedDirection);
-        }
-
         private Vector3 CalculateColorFromLight(Light light)
         {
             var objectNormal = _hitObject.Normal;
@@ -89,6 +73,22 @@ namespace RayTracer
 
             return 1 / (c0 + c1 * d + c2 * d * d);
         }
+        
+        private Vector3 FindRecursiveIntensity()
+        {
+            var reflectedRay = GetReflectedRay();
+            var intersection = new Intersection(reflectedRay);
+            var intersectionInfo = intersection.FindClosestIntersection();
+            var colorFinder = new ColorFinder(reflectedRay, intersectionInfo, ++_recursionLevel);
+            return colorFinder.FindColor();
+        }
+
+        private Ray GetReflectedRay()
+        {
+            var reflectedDirection = _ray.Direction - _hitObject.Normal * 2 * Vector3.Dot(_ray.Direction, _hitObject.Normal);
+            
+            return new Ray(_hitPoint + _hitObject.Normal / 200 + reflectedDirection / 100, reflectedDirection);
+        }
        
         private void GetVisibleLights()
         {
@@ -100,7 +100,7 @@ namespace RayTracer
                 
                 var distanceToLight = GetDistanceToLight(light, hitPoint);
                     
-                var rayToLight = new Ray(hitPoint + _hitObject.Normal / 100000, directionToLight);
+                var rayToLight = new Ray(hitPoint + _hitObject.Normal / 200 + directionToLight / 100, directionToLight);
                 
                 var intersection = new Intersection(rayToLight);
 
@@ -111,23 +111,23 @@ namespace RayTracer
         }
         
         private Vector3 GetDirectionToLight(Light light)
-        {
-            var lightCoords = Transform.ConvertToVector3(light.Coordinates);
-            
-            if (Math.Abs(light.Coordinates.W) < Globals.Delta)
-            {
-                return lightCoords.Normalization();
-            }
-            
-            var directionToLight = lightCoords - _hitPoint;
-            return directionToLight.Normalization();
-        }
-
-        private float GetDistanceToLight(Light light, Vector3 hitPoint)
-        {
-            if (Math.Abs(light.Coordinates.W) < Globals.Delta) return float.MaxValue;
-            var vectorToLight = Transform.ConvertToVector3(light.Coordinates) - hitPoint;
-            return vectorToLight.Norm;
-        }
+                 {
+                     var lightCoords = Transform.ConvertToVector3(light.Coordinates);
+                     
+                     if (Math.Abs(light.Coordinates.W) < Globals.Delta)
+                     {
+                         return lightCoords.Normalization();
+                     }
+                     
+                     var directionToLight = lightCoords - _hitPoint;
+                     return directionToLight.Normalization();
+                 }
+         
+                 private float GetDistanceToLight(Light light, Vector3 hitPoint)
+                 {
+                     if (Math.Abs(light.Coordinates.W) < Globals.Delta) return float.MaxValue;
+                     var vectorToLight = Transform.ConvertToVector3(light.Coordinates) - hitPoint;
+                     return vectorToLight.Norm;
+                 }
     }
 }

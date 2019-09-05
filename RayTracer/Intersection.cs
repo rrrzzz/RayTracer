@@ -48,7 +48,7 @@ namespace RayTracer
         {
             foreach (var sphere in Globals.Spheres)
             {
-                FindSphereIntersection(sphere);
+                FindSphereIntersectionNoNormal(sphere);
                 if (_minDist < distanceToLight) return true;
             }
             
@@ -66,7 +66,6 @@ namespace RayTracer
             var rayOrigin = Transform.TransformVector(_ray.Origin, sphere.InverseTransformMat);
             
             var rayDir = Transform.TransformZeroWVector(_ray.Direction, sphere.InverseTransformMat);
-            
             var a = Vector3.Dot(rayDir, rayDir);
             var b = 2 * Vector3.Dot(rayDir, rayOrigin - sphere.OriginalPos);
             var c = Vector3.Dot(rayOrigin - sphere.OriginalPos, rayOrigin - sphere.OriginalPos) -
@@ -84,6 +83,48 @@ namespace RayTracer
 
             intersectionPoint = Transform.TransformVector(intersectionPoint, sphere.TransformMat);
             
+            CheckDistanceUpdateHit(intersectionPoint, sphere);
+        }
+        
+        private void FindSphereIntersectionNoNormal(Sphere sphere)
+        {
+            var rayOrigin = Transform.TransformVector(_ray.Origin, sphere.InverseTransformMat);
+            
+            var rayDir = Transform.TransformZeroWVector(_ray.Direction, sphere.InverseTransformMat);
+            
+            var a = Vector3.Dot(rayDir, rayDir);
+            var b = 2 * Vector3.Dot(rayDir, rayOrigin - sphere.OriginalPos);
+            var c = Vector3.Dot(rayOrigin - sphere.OriginalPos, rayOrigin - sphere.OriginalPos) -
+                    sphere.Radius * sphere.Radius;
+            
+            var multiplier = GetSmallestPositiveQuadraticRoot(a, b, c);
+            if (multiplier <= 0) return;
+
+            var intersectionPoint = rayOrigin + rayDir * multiplier;
+           
+            intersectionPoint = Transform.TransformVector(intersectionPoint, sphere.TransformMat);
+            
+            CheckDistanceUpdateHit(intersectionPoint, sphere);
+        }
+
+        private void FindSphereIntersectionNoTrans(Sphere sphere)
+        {
+            var rayOrigin = _ray.Origin;
+
+            var rayDir = _ray.Direction;
+            
+            var a = Vector3.Dot(rayDir, rayDir);
+            var b = 2 * Vector3.Dot(rayDir, rayOrigin - sphere.CenterPos);
+            var c = Vector3.Dot(rayOrigin - sphere.CenterPos, rayOrigin - sphere.CenterPos) -
+                    sphere.Radius * sphere.Radius;
+            
+            var multiplier = GetSmallestPositiveQuadraticRoot(a, b, c);
+            if (multiplier <= 0) return;
+
+            var intersectionPoint = rayOrigin + rayDir * multiplier;
+
+            sphere.Normal = (intersectionPoint - sphere.CenterPos).Normalization();
+
             CheckDistanceUpdateHit(intersectionPoint, sphere);
         }
         
@@ -188,13 +229,12 @@ namespace RayTracer
 
         private void CheckDistanceUpdateHit(Vector3 intersectionPoint, GeometryObject objectHit)
         {
-            ;
             var distance = (intersectionPoint - _ray.Origin).Norm;
 
             if (!(distance < _minDist) || distance <= 0) return;
             _minDist = distance;
             _hitObject = objectHit;
-            _hit = intersectionPoint + objectHit.Normal * Globals.Err;
+            _hit = intersectionPoint; //+_hitObject.Normal / 100000;
         }
     }
 }
