@@ -106,27 +106,6 @@ namespace RayTracer
             
             CheckDistanceUpdateHit(intersectionPoint, sphere);
         }
-
-        private void FindSphereIntersectionNoTrans(Sphere sphere)
-        {
-            var rayOrigin = _ray.Origin;
-
-            var rayDir = _ray.Direction;
-            
-            var a = Vector3.Dot(rayDir, rayDir);
-            var b = 2 * Vector3.Dot(rayDir, rayOrigin - sphere.CenterPos);
-            var c = Vector3.Dot(rayOrigin - sphere.CenterPos, rayOrigin - sphere.CenterPos) -
-                    sphere.Radius * sphere.Radius;
-            
-            var multiplier = GetSmallestPositiveQuadraticRoot(a, b, c);
-            if (multiplier <= 0) return;
-
-            var intersectionPoint = rayOrigin + rayDir * multiplier;
-
-            sphere.Normal = (intersectionPoint - sphere.CenterPos).Normalization();
-
-            CheckDistanceUpdateHit(intersectionPoint, sphere);
-        }
         
         private float GetSmallestPositiveQuadraticRoot(float a, float b, float c)
         {
@@ -185,48 +164,6 @@ namespace RayTracer
             CheckDistanceUpdateHit(intersectionPoint, triangle);
         }
         
-        private void FindTriangleIntersectionEdges(Triangle triangle)
-        {
-            var a = triangle.B - triangle.A;
-            var b = triangle.C - triangle.A;
-
-            var n = Vector3.Cross(a, b);
-            var nDot = Vector3.Dot(n, triangle.A);
-
-            var res = Vector3.Dot(n, _ray.Origin);
-
-            var res2 = Vector3.Dot(n, new Vector3(0, 0, 0));
-            
-            var triVertMinusRayOrigin = triangle.A - _ray.Origin;
-            var rayDirDotTriNormal = Vector3.Dot(_ray.Direction, triangle.Normal);
-            
-            if (Math.Abs(rayDirDotTriNormal) < Globals.Delta) return;
-
-            var multiplier = Vector3.Dot(triVertMinusRayOrigin, triangle.Normal) / 
-                             rayDirDotTriNormal;
-
-            if (multiplier <= 0) return;
-
-            var intersectionPoint = _ray.Origin + _ray.Direction * multiplier;
-
-            var edge0 = triangle.B - triangle.A;
-            var edge1 = triangle.C - triangle.B;
-            var edge2 = triangle.A - triangle.C;
-            var p0 = intersectionPoint - triangle.A;
-            var p1 = intersectionPoint - triangle.B;
-            var p2 = intersectionPoint - triangle.C;
-            var cross0 = Vector3.Cross(edge0, p0);
-            var cross1 = Vector3.Cross(edge1, p1);
-            var cross2 = Vector3.Cross(edge2, p2);
-
-            //not sure if can use normalized vector perpendicular to triangle here
-            if (!(Vector3.Dot(triangle.Normal, cross0) > 0 &&
-                  Vector3.Dot(triangle.Normal, cross1) > 0 &&
-                  Vector3.Dot(triangle.Normal, cross2) > 0)) return;
-            
-            CheckDistanceUpdateHit(intersectionPoint, triangle);
-        }
-
         private void CheckDistanceUpdateHit(Vector3 intersectionPoint, GeometryObject objectHit)
         {
             var distance = (intersectionPoint - _ray.Origin).Norm;

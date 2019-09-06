@@ -87,7 +87,7 @@ namespace RayTracer
         {
             var reflectedDirection = _ray.Direction - _hitObject.Normal * 2 * Vector3.Dot(_ray.Direction, _hitObject.Normal);
             
-            return new Ray(_hitPoint + _hitObject.Normal / 200 + reflectedDirection / 100, reflectedDirection);
+            return new Ray(_hitPoint + _hitObject.Normal / 1000, reflectedDirection);
         }
        
         private void GetVisibleLights()
@@ -100,7 +100,7 @@ namespace RayTracer
                 
                 var distanceToLight = GetDistanceToLight(light, hitPoint);
                     
-                var rayToLight = new Ray(hitPoint + _hitObject.Normal / 200 + directionToLight / 100, directionToLight);
+                var rayToLight = new Ray(hitPoint + _hitObject.Normal / 1000, directionToLight);
                 
                 var intersection = new Intersection(rayToLight);
 
