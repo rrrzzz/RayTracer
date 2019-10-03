@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ContentModelStore">
     <e p="C:\Users\nekko\.Rider2019.1\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\nekko\.Rider2019.1\system\resharper-host\local\Transient\ReSharperHost\v191\SolutionCaches\_RayTracer.-1954450604.00" t="ExcludeRecursive" />
-    <e p="D:\Docs\Courses\Computer graphics edx\RayTracer" t="IncludeFlat">
+    <e p="C:\Users\nekko\.Rider2019.1\system\resharper-host\local\Transient\ReSharperHost\v191\SolutionCaches\_RayTracer.-738522693.00" t="ExcludeRecursive" />
+    <e p="D:\Docs\Courses\Computer graphics\RayTracer" t="IncludeFlat">
       <e p="packages" t="ExcludeRecursive">
         <e p="Accord.3.8.2-alpha\build\Accord.dll.config" t="Include" />
       </e>

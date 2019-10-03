@@ -111,23 +111,23 @@ namespace RayTracer
         }
         
         private Vector3 GetDirectionToLight(Light light)
-                 {
-                     var lightCoords = Transform.ConvertToVector3(light.Coordinates);
+        {
+            var lightCoords = Transform.ConvertToVector3(light.Coordinates);
                      
-                     if (Math.Abs(light.Coordinates.W) < Globals.Delta)
-                     {
-                         return lightCoords.Normalization();
-                     }
+            if (Math.Abs(light.Coordinates.W) < Globals.Delta)
+            {
+                return lightCoords.Normalization();
+            }
                      
-                     var directionToLight = lightCoords - _hitPoint;
-                     return directionToLight.Normalization();
-                 }
+            var directionToLight = lightCoords - _hitPoint;
+            return directionToLight.Normalization();
+        }
          
-                 private float GetDistanceToLight(Light light, Vector3 hitPoint)
-                 {
-                     if (Math.Abs(light.Coordinates.W) < Globals.Delta) return float.MaxValue;
-                     var vectorToLight = Transform.ConvertToVector3(light.Coordinates) - hitPoint;
-                     return vectorToLight.Norm;
-                 }
+        private float GetDistanceToLight(Light light, Vector3 hitPoint)
+        {
+            if (Math.Abs(light.Coordinates.W) < Globals.Delta) return float.MaxValue;
+            var vectorToLight = Transform.ConvertToVector3(light.Coordinates) - hitPoint;
+            return vectorToLight.Norm;
+        }
     }
 }
